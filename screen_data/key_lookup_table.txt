@@ -1,0 +1,12 @@
+11 48
+[W] / [Up] - Move up
+[S] / [Down] - Move down
+[A] / [Left] - Move left
+[D] / [Right] - Move right
+[Enter] - Select
+[Q] - Return to parent page
+[Ctrl] + [Q] - Quit application
+[Ctrl] + [N] - Add new task
+[Ctrl] + [Del] - Delete selected task
+Note: Negative value will be interperted as infinity.
+[Tab] - Change focus zone

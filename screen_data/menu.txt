@@ -1,0 +1,8 @@
+7 58
+                   - AJIN GIXTASK -
+A mildly passable task manager app. Created by AjinGixtas
+               
+
+               [ ] - Check today's task
+               [ ] - Manage upcoming task
+               [ ] - See past performance
