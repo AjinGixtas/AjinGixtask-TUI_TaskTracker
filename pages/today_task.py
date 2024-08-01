@@ -29,14 +29,16 @@ def intial_render():
     selection_cursor_y_position = []
     task_state_table = []
     current_selected_index = 0
-    if len(entries) == 0: 
-        pad.addstr(6, (columns - 63) // 2, 'No task here yet! Try adding some in the manage task section ^^')
-        return
+
     with open(join(resources.screen_data_path, 'today_task.txt'), 'r', encoding='utf-8') as f:
         resources.stdscr.addstr(origin_y, origin_x, f.readline().rstrip())
         row_seperator = f.readline().rstrip() + '─' * (columns - 85)
         column_seperator = f.readline().rstrip()
         resources.stdscr.addstr(origin_y + 1, origin_x, row_seperator)
+        resources.stdscr.refresh()
+    if len(entries) == 0: 
+        pad.addstr(6, (columns - 63) // 2, 'No task here yet! Try adding some in the manage task section ^^')
+        return
     used_row = 0
     column_width = (32, 10, 13, 10, columns - 88)
     starting_cursor_position = (7, 42, 56, 73, 87)
@@ -88,6 +90,7 @@ def _update():
             resources.cursor.execute('DELETE FROM today_task WHERE id = ?', (int(task_state_table[current_selected_index][0]),))
             resources.connection.commit()
             intial_render()
+            return
         current_selected_index = clip(current_selected_index, 0, len(selection_cursor_y_position) - 1)
         pad.addstr(selection_cursor_y_position[current_selected_index], selection_cursor_x_position[0], '►')
         pad.addstr(selection_cursor_y_position[current_selected_index], selection_cursor_x_position[1], '◄')

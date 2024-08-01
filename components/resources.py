@@ -1,7 +1,9 @@
 import sys
+from shutil import copyfile
 from sqlite3 import connect
 from math import floor
-from os.path import join, dirname, abspath
+from os import getenv, makedirs
+from os.path import join, dirname, abspath, expanduser, exists
 from datetime import date, timedelta, datetime
 stdscr = connection = cursor = None
 task_history_column_names = ( 'date', 'all_task', 'completed_task' )
@@ -13,13 +15,19 @@ def _start(_stdscr):
 
     if getattr(sys, 'frozen', False): base_path = sys._MEIPASS
     else: base_path = abspath(join(dirname(abspath(__file__)), '..'))
-
+    
+    source_db_path = join(base_path, 'task.db')
+    dest_db_path = get_database_path()
+    copy_database_if_needed(source_db_path, dest_db_path)
+    
     screen_data_path = join(base_path, 'screen_data')
-    connection = connect(join(base_path, 'task.db'))
+    connection = connect(dest_db_path)
+    
     cursor = connection.cursor()
     stdscr = _stdscr
     setup_database()
     sync_task()
+    
 def _end():
     connection.close()
 def setup_database():
@@ -46,6 +54,19 @@ def setup_database():
         description TEXT NOT NULL DEFAULT '[UNKNOWN]'
     );''')
     connection.commit()
+def get_database_path():
+    if sys.platform == "win32":
+        appdata = getenv('APPDATA')
+        db_path = join(appdata, 'AjinGixtas', 'AjinGixtask', 'task.db')
+    else:
+        home = expanduser("~")
+        db_path = join(home, 'ajingixtas', 'ajingixtask', 'task.db')
+    makedirs(dirname(db_path), exist_ok=True)
+    return db_path
+def copy_database_if_needed(source_db_path, dest_db_path):
+    print(source_db_path, dest_db_path)
+    if not exists(dest_db_path):
+        copyfile(source_db_path, dest_db_path)
 def sync_task():
     today = date.today()
     cursor.execute('SELECT * FROM today_task')
