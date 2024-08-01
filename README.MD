@@ -48,7 +48,7 @@ If you encounter any issues, please report them via email to ajingixtascontact@g
 
 ## Contributing
 
-Contributions are welcome! Please follow the guidelines in the [CONTRIBUTING.md](#) file for details.
+Contributions are welcome. Please follow the guidelines in the [CONTRIBUTING.md](#) file for details.
 
 ## License
 
