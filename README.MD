@@ -52,7 +52,7 @@ Contributions are welcome. Please follow the guidelines in the [CONTRIBUTING.md]
 
 ## License
 
-This project is licensed under the [License Name] - see the [LICENSE](#) file for details.
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License - LICENSE.md file for details.
 
 ## Contact
 
