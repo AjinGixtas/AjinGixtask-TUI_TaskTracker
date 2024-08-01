@@ -7,7 +7,7 @@ from datetime import date, timedelta, datetime
 
 from components import key_state_tracker, scene_manager, resources
 STATUS_STRING = ['[--PENDING--]', '[IN-PROGRESS]', '[-COMPLETED-]']
-KEY_MAP_DISPLAY_TABLE = [ True, True, False, False, True, True, True, False, False, False, False ]
+KEY_MAP_DISPLAY_TABLE = [ True, True, False, False, True, True, True, False, True, False, False ]
 current_selected_index = 0
 selection_cursor_y_position = []
 selection_cursor_x_position = (55, 69)
@@ -88,6 +88,7 @@ def _update():
             resources.connection.commit()
         elif key_state_tracker.get_key_state('ctrl', key_state_tracker.JUST_PRESSED) and key_state_tracker.get_key_state('delete', key_state_tracker.JUST_PRESSED):
             resources.cursor.execute('DELETE FROM today_task WHERE id = ?', (int(task_state_table[current_selected_index][0]),))
+            current_selection_cursor_position[1] -= 1
             resources.connection.commit()
             intial_render()
             return

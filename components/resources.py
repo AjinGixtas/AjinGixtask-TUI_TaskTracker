@@ -64,7 +64,6 @@ def get_database_path():
     makedirs(dirname(db_path), exist_ok=True)
     return db_path
 def copy_database_if_needed(source_db_path, dest_db_path):
-    print(source_db_path, dest_db_path)
     if not exists(dest_db_path):
         copyfile(source_db_path, dest_db_path)
 def sync_task():

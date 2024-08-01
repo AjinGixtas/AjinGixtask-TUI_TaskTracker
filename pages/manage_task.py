@@ -28,7 +28,6 @@ def intial_render():
     row_ids = []
     selection_cursor_y_position = []
     column_widths = None
-    current_selection_cursor_position = [0, 0]
     resources.cursor.execute('SELECT * FROM upcoming_task;')
     with open(join(resources.screen_data_path, 'manage_task.txt'), 'r', encoding='utf-8') as f:
         resources.stdscr.addstr(origin_y, origin_x, f.readline().rstrip())
@@ -120,6 +119,7 @@ def _update():
         elif key_state_tracker.get_key_state('ctrl', key_state_tracker.JUST_PRESSED) and key_state_tracker.get_key_state('delete', key_state_tracker.JUST_PRESSED):
             resources.cursor.execute(f'DELETE FROM upcoming_task WHERE id = ?', (row_ids[current_selection_cursor_position[0]],))
             resources.connection.commit()
+            current_selection_cursor_position[1] -= 1
             intial_render()
         else:
             cell_navigation()
