@@ -12,17 +12,15 @@ AjinGixTask is a terminal-based task tracking application built using Python and
 
 ### Running the Application
 
-1. **Download the Repository or Release:**
-   - **Repository:** Clone the repository or download the ZIP file.
-   - **Release Page:** Download from the [releases page](#) (currently in development).
+1. **Download and Extract:**
+   - **From Repository:** Clone the repository or download and extract the ZIP file.
+   - **From Release Page:** Download from the [releases page](#) (currently in development).
 
 2. **Running the Application:**
-   - **Folder Version:** If you downloaded the whole repo, navigate to the `dist` folder. Inside, you will find:
-     - A folder containing split components.
-     - An executable that packages everything inside.
-   - **Executable Version:** 
-     - **Compiled Version:** You can run the `.exe` directly from the `dist/AjinGixtask` folder.
-     - **Onefile Version:** Move the `AjinGixtask.exe` to a directory in your system’s PATH or `system32` for easy access from the terminal.
+   - You can run `AjinGixtask.exe` directly from the `dist/AjinGixtask` folder.
+   - Alternatively, if you are using the one-file version, you can execute it from the same `dist` folder.
+
+   - **For One-File Version:** To simplify access, you may move the `AjinGixtask.exe` file to a directory in your system’s PATH or to `system32`. This will allow you to run the application easily from the terminal without needing to specify the full path.
 
 ### Installation (Windows)
 
