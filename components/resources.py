@@ -72,6 +72,7 @@ def sync_task():
     today_tasks = cursor.fetchall()
     cursor.execute('SELECT * FROM upcoming_task')
     upcoming_tasks = cursor.fetchall()
+    cursor.execute("INSERT OR IGNORE INTO task_history DEFAULT VALUES")
     for upcoming_task in upcoming_tasks:
         upcoming_task = list(upcoming_task)
         if upcoming_task[5] == 0:
@@ -101,5 +102,4 @@ def sync_task():
             cursor.execute("DELETE FROM today_task WHERE id = ?", (today_task[0],))
             cursor.execute("UPDATE task_history SET all_task = all_task + 1 WHERE date = ?" ,(today.isoformat(),))
             if today_task[3] == 2: cursor.execute("UPDATE task_history SET completed_task = completed_task + 1 WHERE date = ?", (today.isoformat(),))
-    cursor.execute("INSERT OR IGNORE INTO task_history DEFAULT VALUES")
     connection.commit()
