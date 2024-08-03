@@ -1,4 +1,5 @@
 from curses import newpad, curs_set
+from re import match
 from textwrap import wrap
 from numpy import clip
 from math import floor
@@ -146,10 +147,16 @@ def int_validator(input):
         return True
     except ValueError: return False
 def date_validator(input):
-    try:
-        datetime.strptime(input, '%Y-%m-%d')
-        return True
-    except ValueError: return False
+    pattern = r'^\d{4}-\d{2}-\d{2}$'
+    if not match(pattern, input): return False
+    year, month, day = map(int, input.split('-'))
+    if not (1 <= month <= 12): return False
+    if not (1 <= day <= 31): return False
+    if month in [4, 6, 9, 11] and day > 30: return False
+    if month == 2:
+        is_leap = (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
+        if (is_leap and day > 29) or (not is_leap and day > 28): return False
+    return True
 def _end():
     global pad
     pad.clear()
