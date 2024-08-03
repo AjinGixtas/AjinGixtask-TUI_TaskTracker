@@ -137,8 +137,6 @@ def cell_navigation():
         0 if current_selection_cursor_position[1] < 0 else len(selection_cursor_x_position) - 1 if current_selection_cursor_position[1] >= len(selection_cursor_x_position) else current_selection_cursor_position[1]
     ]
     pad.addstr(selection_cursor_y_position[current_selection_cursor_position[0]], selection_cursor_x_position[current_selection_cursor_position[1]], '►')
-def duration_validator():
-    pass  
 def int_validator(input):
     try:
         int(input)
