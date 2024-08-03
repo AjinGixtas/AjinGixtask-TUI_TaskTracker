@@ -1,6 +1,3 @@
-from curses import newpad
-from shutil import get_terminal_size
-from os.path import join
 from pages import menu, today_task, manage_task, past_task
 from components import resources
 current_index = -1
@@ -28,6 +25,8 @@ rows = 0
 origin_x = 0
 origin_y = 0
 def draw_screen_bone(key_map_display_table):
+    from shutil import get_terminal_size
+    from curses import newpad
     global columns, rows, origin_x, origin_y
     columns, rows = get_terminal_size()
     resources.stdscr.clear()
@@ -35,7 +34,7 @@ def draw_screen_bone(key_map_display_table):
     resources.stdscr.addstr(0, 0, '┌' + '─' * (columns - 2) + '┐')
     for i in range(rows - 3): resources.stdscr.addstr(i + 1, 0, '│' + ' ' * (columns - 2) + '│')
     resources.stdscr.refresh()
-    with open(join(resources.screen_data_path, 'key_lookup_table.txt'), 'r') as f:
+    with open(resources.screen_data_path + '/key_lookup_table.txt', 'r') as f:
         input = f.readline()
         y, padding = map(int, input.split())
         pad = newpad(12, columns)

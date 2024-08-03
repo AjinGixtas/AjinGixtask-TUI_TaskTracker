@@ -1,6 +1,3 @@
-from curses import newpad
-from numpy import clip
-from os.path import join
 from datetime import datetime, timedelta
 from components import key_state_tracker, scene_manager, resources
 KEY_MAP_DISPLAY_TABLE = ( True, True, True, True, True, True, True, False, False, False, True )
@@ -27,6 +24,7 @@ def _start():
     resources.sync_task()
     intial_render()
 def intial_render():
+    from curses import newpad
     global pad, columns, rows, origin_x, origin_y, OLDEST_YEAR, year_selection_position, date_cursor_position, starting_weekday, current_focused_zone_index, cell_origin, ANCHOR
     columns, rows, origin_x, origin_y = scene_manager.get_drawable_screen_data()
     ANCHOR = (max((rows - 17) // 2, 1), max((columns - 117) // 2, 1))
@@ -37,7 +35,7 @@ def intial_render():
     cell_origin = [0, 0]
     if pad != None: pad.clear()
     else: pad = newpad(1024, columns)
-    with open(join(resources.screen_data_path, 'past_task.txt'), 'r', encoding='utf-8') as f:
+    with open(resources.screen_data_path + '/past_task.txt', 'r', encoding='utf-8') as f:
         for i in range(23):
             pad.addstr(i, 0, f.readline().rstrip())
     resources.cursor.execute('SELECT MIN(date) AS oldest_date FROM task_history;')
@@ -47,7 +45,7 @@ def intial_render():
     render_year_board(datetime.now().year)
     if OLDEST_YEAR == datetime.now().year: pad.addstr(13, 101, ' ')
     pad.refresh(0, 0, ANCHOR[0], ANCHOR[1], 17, 117)
-    updated_record_datas = data.get(date_cursor_position, [ (datetime(year_selection_position, 1, 1) + timedelta(days=date_cursor_position)).date(), 0, 0, '0.00 %'])
+    updated_record_datas = data.get(date_cursor_position, [(datetime(year_selection_position, 1, 1) + timedelta(days=date_cursor_position)).date(), 0, 0, '0.00 %'])
     for i in range(len(updated_record_datas)):
         pad.addstr(13 + i, 24, str(updated_record_datas[i]).ljust(20))
 def _update():
@@ -75,7 +73,7 @@ def render_year_board(year):
     cell_origin = [3 + starting_weekday, 8]
     pad.addstr(cell_origin[0], cell_origin[1]-1, '►')
     MAX_DAY = datetime(year, 12, 31).timetuple().tm_yday
-    with open(join(resources.screen_data_path, 'past_task.txt'), 'r', encoding='utf-8') as f:
+    with open(resources.screen_data_path + '/past_task.txt', 'r', encoding='utf-8') as f:
         for i in range(10): pad.addstr(i, 0, f.readline().strip('\n'))
     for i in range(MAX_DAY):
         pad.addstr(cell_origin[0], cell_origin[1], PROGRESS_CHAR[0])
@@ -105,7 +103,7 @@ def handle_calendar_input():
     elif key_state_tracker.get_key_state('s') or key_state_tracker.get_key_state('down'): date_cursor_position += 1
     elif key_state_tracker.get_key_state('a') or key_state_tracker.get_key_state('left'): date_cursor_position -= 7
     elif key_state_tracker.get_key_state('d') or key_state_tracker.get_key_state('right'): date_cursor_position += 7
-    date_cursor_position = int(clip(date_cursor_position, 0, MAX_DAY - 1))
+    date_cursor_position = 0 if date_cursor_position < 0 else MAX_DAY - 1 if date_cursor_position >= MAX_DAY else date_cursor_position
     if _ != date_cursor_position:
         updated_record_datas = data.get(date_cursor_position, [ (datetime(year_selection_position, 1, 1) + timedelta(days=date_cursor_position)).date(), 0, 0, '0.00 %'])
         for i in range(len(updated_record_datas)):

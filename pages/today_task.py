@@ -1,10 +1,4 @@
-from curses import newpad
-from textwrap import wrap
-from numpy import clip
 from math import floor
-from os.path import join
-from datetime import date, timedelta, datetime
-
 from components import key_state_tracker, scene_manager, resources
 STATUS_STRING = ['[--PENDING--]', '[IN-PROGRESS]', '[-COMPLETED-]']
 KEY_MAP_DISPLAY_TABLE = [ True, True, False, False, True, True, True, False, True, False, False ]
@@ -21,6 +15,9 @@ def _start():
 
 pad = None
 def intial_render():
+    from curses import newpad
+    from textwrap import wrap
+    from datetime import timedelta, datetime
     global pad, current_selected_index, selection_cursor_y_position, columns, rows, origin_x, origin_y, task_state_table
     columns, rows, origin_x, origin_y = scene_manager.get_drawable_screen_data()
     row_seperator = column_seperator = ''
@@ -31,7 +28,7 @@ def intial_render():
     task_state_table = []
     current_selected_index = 0
 
-    with open(join(resources.screen_data_path, 'today_task.txt'), 'r', encoding='utf-8') as f:
+    with open(resources.screen_data_path + '/today_task.txt', 'r', encoding='utf-8') as f:
         resources.stdscr.addstr(origin_y, origin_x, f.readline().rstrip())
         row_seperator = f.readline().rstrip() + '─' * (columns - 85)
         column_seperator = f.readline().rstrip()
@@ -93,7 +90,7 @@ def _update():
             resources.connection.commit()
             intial_render()
             return
-        current_selected_index = clip(current_selected_index, 0, len(selection_cursor_y_position) - 1)
+        current_selected_index = 0 if current_selected_index < 0 else len(selection_cursor_y_position) - 1 if current_selected_index >= len(selection_cursor_y_position) else current_selected_index
         pad.addstr(selection_cursor_y_position[current_selected_index], selection_cursor_x_position[0], '►')
         pad.addstr(selection_cursor_y_position[current_selected_index], selection_cursor_x_position[1], '◄')
         

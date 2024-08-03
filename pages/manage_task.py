@@ -1,10 +1,6 @@
-from curses import newpad, curs_set
-from re import match
+from curses import curs_set
 from textwrap import wrap
-from numpy import clip
 from math import floor
-from os.path import join
-from datetime import datetime
 from components import key_state_tracker, scene_manager, resources
 KEY_MAP_DISPLAY_TABLE = [ True, True, True, True, True, True, True, True, True, True, False ]
 pad = None
@@ -23,6 +19,7 @@ def _start():
     intial_render()
     current_selection_cursor_position[0] = 0
 def intial_render():
+    from curses import newpad
     global pad, selection_cursor_y_position, columns, rows, origin_x, origin_y, column_widths, current_selection_cursor_position, row_seperator, column_seperator, row_ids, textbox_size
     columns, rows, origin_x, origin_y = scene_manager.get_drawable_screen_data()
     if pad != None: pad.clear()
@@ -31,7 +28,7 @@ def intial_render():
     selection_cursor_y_position = []
     column_widths = None
     resources.cursor.execute('SELECT * FROM upcoming_task;')
-    with open(join(resources.screen_data_path, 'manage_task.txt'), 'r', encoding='utf-8') as f:
+    with open(resources.screen_data_path + '/manage_task.txt', 'r', encoding='utf-8') as f:
         resources.stdscr.addstr(origin_y, origin_x, f.readline().rstrip())
         row_seperator = f.readline().rstrip() + '─' * (columns - 93)
         column_seperator = f.readline().rstrip()
@@ -83,7 +80,7 @@ def _update():
                 pad.refresh(0, 0, origin_y + 2, origin_x, origin_y + rows - 1, origin_x + columns)
                 return
             is_registering_input = False
-            resources.cursor.execute(f"UPDATE upcoming_task SET {resources.upcoming_task_column_names[current_selection_cursor_position[1] + 1]} = ? WHERE id = ?", (current_input, row_ids[current_selection_cursor_position[0]]))
+            resources.cursor.execute(f"UPDATE upcoming_task SET {resources.upcoming_task_column_names[current_selection_cursor_position[1]]} = ? WHERE id = ?", (current_input, row_ids[current_selection_cursor_position[0]]))
             resources.connection.commit()
             current_input = ''
             curs_set(0)
@@ -116,7 +113,7 @@ def _update():
     else:
         if key_state_tracker.get_key_state('enter'): 
             is_registering_input = True
-            resources.cursor.execute(f'SELECT {resources.upcoming_task_column_names[current_selection_cursor_position[1] + 1]} FROM upcoming_task WHERE id = ?', (row_ids[current_selection_cursor_position[0]],))
+            resources.cursor.execute(f'SELECT {resources.upcoming_task_column_names[current_selection_cursor_position[1]]} FROM upcoming_task WHERE id = ?', (row_ids[current_selection_cursor_position[0]],))
             current_input = str(resources.cursor.fetchall()[0][0])
             curs_set(1)
         elif key_state_tracker.get_key_state('ctrl', key_state_tracker.JUST_PRESSED) and key_state_tracker.get_key_state('delete', key_state_tracker.JUST_PRESSED):
@@ -136,8 +133,9 @@ def cell_navigation():
     elif key_state_tracker.get_key_state('w') or key_state_tracker.get_key_state('up'): current_selection_cursor_position[0] -= 1
     elif key_state_tracker.get_key_state('s') or key_state_tracker.get_key_state('down'): current_selection_cursor_position[0] += 1
     current_selection_cursor_position = [ 
-        int(clip(current_selection_cursor_position[0], 0, len(selection_cursor_y_position) - 1)), 
-        int(clip(current_selection_cursor_position[1], 0, len(selection_cursor_x_position) - 1)) ]
+        0 if current_selection_cursor_position[0] < 0 else len(selection_cursor_y_position) - 1 if current_selection_cursor_position[0] >= len(selection_cursor_y_position) else current_selection_cursor_position[0], 
+        0 if current_selection_cursor_position[1] < 0 else len(selection_cursor_x_position) - 1 if current_selection_cursor_position[1] >= len(selection_cursor_x_position) else current_selection_cursor_position[1]
+    ]
     pad.addstr(selection_cursor_y_position[current_selection_cursor_position[0]], selection_cursor_x_position[current_selection_cursor_position[1]], '►')
 def duration_validator():
     pass  
@@ -147,6 +145,7 @@ def int_validator(input):
         return True
     except ValueError: return False
 def date_validator(input):
+    from re import match
     pattern = r'^\d{4}-\d{2}-\d{2}$'
     if not match(pattern, input): return False
     year, month, day = map(int, input.split('-'))

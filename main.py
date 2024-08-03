@@ -1,40 +1,41 @@
 from sqlite3 import DatabaseError
 from curses import wrapper, curs_set, error
 from time import sleep
-from sys import stdin, exit
-from platform import system
 from components import key_state_tracker, scene_manager, resources
 
 def set_raw_mode_unix(fd):
-    import termios
-    import tty
-    old_settings = termios.tcgetattr(fd)
+    from termios import tcgetattr
+    from tty import setraw
+    old_settings = tcgetattr(fd)
     try:
-        tty.setraw(fd)
+        setraw(fd)
         return old_settings
-    except Exception as e:
-        return None
+    except Exception as e: return None
 def restore_mode_unix(fd, old_settings):
-    import termios
-    if old_settings: termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    from termios import tcsetattr, TCSADRAIN
+    if old_settings: tcsetattr(fd, TCSADRAIN, old_settings)
 def set_raw_mode_windows():
-    import win32console
-    hConsole = win32console.GetStdHandle(win32console.STD_INPUT_HANDLE)
+    from win32console import GetStdHandle, STD_INPUT_HANDLE, ENABLE_LINE_INPUT, ENABLE_ECHO_INPUT
+    hConsole = GetStdHandle(STD_INPUT_HANDLE)
     old_mode = hConsole.GetConsoleMode()
-    hConsole.SetConsoleMode(old_mode & ~(win32console.ENABLE_LINE_INPUT | win32console.ENABLE_ECHO_INPUT))
+    hConsole.SetConsoleMode(old_mode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT))
     return old_mode
 def restore_mode_windows(old_mode):
-    import win32console
-    hConsole = win32console.GetStdHandle(win32console.STD_INPUT_HANDLE)
+    from win32console import GetStdHandle, STD_INPUT_HANDLE
+    hConsole = GetStdHandle(STD_INPUT_HANDLE)
     if old_mode is not None: hConsole.SetConsoleMode(old_mode)
 def set_raw_mode():
+    from sys import stdin
+    from platform import system
     os_name = system()
     if os_name == 'Windows': return set_raw_mode_windows()
-    else: return set_raw_mode_unix(stdin.fileno())
+    else: return set_raw_mode_unix(fileno())
 def restore_mode(old_settings):
+    from sys import stdin
+    from platform import system
     os_name = system()
     if os_name == 'Windows': restore_mode_windows(old_settings)
-    else: restore_mode_unix(stdin.fileno(), old_settings)
+    else: restore_mode_unix(fileno(), old_settings)
 old_settings = None
 def _main(_stdscr):
     global old_settings
@@ -44,7 +45,7 @@ def _main(_stdscr):
     resources._start(_stdscr)
     scene_manager._start()
     curs_set(0)
-    production_mode = True
+    production_mode = False
     while True:
         if not production_mode: scene_manager.current_page._update()
         else: 
@@ -65,6 +66,7 @@ def _main(_stdscr):
         key_state_tracker._update()
         sleep(.04166)
 def _end():
+    from sys import exit
     global old_settings
     resources._end()
     key_state_tracker._end()
