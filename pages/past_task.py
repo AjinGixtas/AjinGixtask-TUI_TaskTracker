@@ -44,7 +44,7 @@ def intial_render():
     pad.addstr(16, 105, str(OLDEST_YEAR))
     render_year_board(datetime.now().year)
     if OLDEST_YEAR == datetime.now().year: pad.addstr(13, 101, ' ')
-    pad.refresh(0, 0, ANCHOR[0], ANCHOR[1], 17, 117)
+    pad.refresh(0, 0, ANCHOR[0], ANCHOR[1], ANCHOR[0] + 17, ANCHOR[1] + 117)
     updated_record_datas = data.get(date_cursor_position, [(datetime(year_selection_position, 1, 1) + timedelta(days=date_cursor_position)).date(), 0, 0, '0.00 %'])
     for i in range(len(updated_record_datas)):
         pad.addstr(13 + i, 24, str(updated_record_datas[i]).ljust(20))
