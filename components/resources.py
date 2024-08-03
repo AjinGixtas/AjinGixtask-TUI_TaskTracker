@@ -98,7 +98,7 @@ def sync_task():
     connection.commit()
     
     for today_task in today_tasks:
-        if (datetime.fromisoformat(today_task[2]) + timedelta(days=today_task[4])).date() < today:
+        if (datetime.fromisoformat(today_task[2]) + timedelta(days=today_task[4])).date() <= today:
             cursor.execute("DELETE FROM today_task WHERE id = ?", (today_task[0],))
             cursor.execute("UPDATE task_history SET all_task = all_task + 1 WHERE date = ?" ,(today.isoformat(),))
             if today_task[3] == 2: cursor.execute("UPDATE task_history SET completed_task = completed_task + 1 WHERE date = ?", (today.isoformat(),))

@@ -16,6 +16,7 @@ task_state_table = []
 scroll_offset = 0
 def _start():
     resources.sync_task()
+    current_selected_index = 0
     intial_render()
 
 pad = None
@@ -71,7 +72,7 @@ def intial_render():
     pad.refresh(0, 0, origin_y + 2, origin_x, origin_y + rows - 1, origin_x + columns)
 
 def _update():
-    global current_selected_index, task_state_table, scroll_offset
+    global current_selected_index, task_state_table, scroll_offset, selection_cursor_y_position
     if key_state_tracker.get_key_state('q', key_state_tracker.JUST_PRESSED):
         scene_manager.change_page(scene_manager.MENU_INDEX)
         return
@@ -88,7 +89,7 @@ def _update():
             resources.connection.commit()
         elif key_state_tracker.get_key_state('ctrl', key_state_tracker.JUST_PRESSED) and key_state_tracker.get_key_state('delete', key_state_tracker.JUST_PRESSED):
             resources.cursor.execute('DELETE FROM today_task WHERE id = ?', (int(task_state_table[current_selected_index][0]),))
-            current_selection_cursor_position[1] -= 1
+            current_selected_index -= 1
             resources.connection.commit()
             intial_render()
             return

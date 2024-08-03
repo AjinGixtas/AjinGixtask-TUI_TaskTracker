@@ -20,6 +20,7 @@ current_selection_cursor_position = [0, 0]
 def _start():
     resources.sync_task()
     intial_render()
+    current_selection_cursor_position[0] = 0
 def intial_render():
     global pad, selection_cursor_y_position, columns, rows, origin_x, origin_y, column_widths, current_selection_cursor_position, row_seperator, column_seperator, row_ids, textbox_size
     columns, rows, origin_x, origin_y = scene_manager.get_drawable_screen_data()
@@ -72,6 +73,7 @@ def _update():
     elif key_state_tracker.get_key_state('ctrl') and key_state_tracker.get_key_state('n'):
         resources.cursor.execute('INSERT INTO upcoming_task DEFAULT VALUES')
         resources.connection.commit()
+        current_selection_cursor_position[0] += 1
         intial_render()
     if len(selection_cursor_y_position) == 0: return
     if is_registering_input:
@@ -119,7 +121,7 @@ def _update():
         elif key_state_tracker.get_key_state('ctrl', key_state_tracker.JUST_PRESSED) and key_state_tracker.get_key_state('delete', key_state_tracker.JUST_PRESSED):
             resources.cursor.execute(f'DELETE FROM upcoming_task WHERE id = ?', (row_ids[current_selection_cursor_position[0]],))
             resources.connection.commit()
-            current_selection_cursor_position[1] -= 1
+            current_selection_cursor_position[0] -= 1
             intial_render()
         else:
             cell_navigation()
