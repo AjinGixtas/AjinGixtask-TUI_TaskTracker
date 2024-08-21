@@ -1,4 +1,3 @@
-from tzlocal import get_localzone
 stdscr = connection = cursor = None
 upcoming_task_column_names = ( 'name', 'start_date', 'active_duration', 'recurrence_interval', 'remaining_recurrence', 'description' )
 screen_data_path = None
@@ -54,6 +53,7 @@ def setup_database():
 def sync_task():
     from datetime import date, timedelta, datetime
     from math import floor
+    from tzlocal import get_localzone
     today = datetime.now(get_localzone()).date()
     cursor.execute('SELECT * FROM today_task')
     today_tasks = cursor.fetchall()
