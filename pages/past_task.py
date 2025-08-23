@@ -58,7 +58,6 @@ def _update():
     pad.addstr(FOCUS_CHAR_POSITION[current_focused_zone_index][0], FOCUS_CHAR_POSITION[current_focused_zone_index][1], '*')
     if current_focused_zone_index == CALENDAR: handle_calendar_input()
     elif current_focused_zone_index == YEAR: handle_year_input()
-    print(pad, 0, 0, ANCHOR[0], ANCHOR[1], ANCHOR[0] + 17, ANCHOR[1] + 117)
     pad.refresh(0, 0, ANCHOR[0], ANCHOR[1], ANCHOR[0] + 17, ANCHOR[1] + 117)
 def _end():
     global pad
