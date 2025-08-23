@@ -55,9 +55,10 @@ def _update():
         return
     pad.addstr(FOCUS_CHAR_POSITION[current_focused_zone_index][0], FOCUS_CHAR_POSITION[current_focused_zone_index][1], ' ')
     if key_state_tracker.get_key_state('tab', key_state_tracker.JUST_PRESSED): current_focused_zone_index = (current_focused_zone_index + 1) % 2
-    pad.addstr(FOCUS_CHAR_POSITION[current_focused_zone_index][0], FOCUS_CHAR_POSITION[current_focused_zone_index][1], '✶')
+    pad.addstr(FOCUS_CHAR_POSITION[current_focused_zone_index][0], FOCUS_CHAR_POSITION[current_focused_zone_index][1], '*')
     if current_focused_zone_index == CALENDAR: handle_calendar_input()
     elif current_focused_zone_index == YEAR: handle_year_input()
+    print(pad, 0, 0, ANCHOR[0], ANCHOR[1], ANCHOR[0] + 17, ANCHOR[1] + 117)
     pad.refresh(0, 0, ANCHOR[0], ANCHOR[1], ANCHOR[0] + 17, ANCHOR[1] + 117)
 def _end():
     global pad
@@ -93,7 +94,7 @@ def render_year_board(year):
         pad.addstr(3 + (index + starting_weekday) % 7, 8 + ((index + starting_weekday) // 7) * 2, PROGRESS_CHAR[0 if completion_rate == 0 else 1 if completion_rate < 1/3 else 2 if completion_rate < 2/3 else 3 if completion_rate < 1 else 4])
         data[index] = [ record[0], record[1], record[2], f"{completion_rate * 100.0:.2f} %" ]
     year_selection_position = year
-    pad.addstr(13, 104, str(year))
+    #pad.addstr(13, 104, str(year))
 
 def handle_calendar_input():
     global date_cursor_position

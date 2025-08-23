@@ -17,7 +17,7 @@ current_selection_cursor_position = [0, 0]
 def _start():
     resources.sync_task()
     intial_render()
-    current_selection_cursor_position[0] = 0
+    current_selection_cursor_position = [0, 0]
 def intial_render():
     from curses import newpad
     global pad, selection_cursor_y_position, columns, rows, origin_x, origin_y, column_widths, current_selection_cursor_position, row_seperator, column_seperator, row_ids, textbox_size
@@ -71,7 +71,6 @@ def _update():
     elif key_state_tracker.get_key_state('ctrl') and key_state_tracker.get_key_state('n'):
         resources.cursor.execute('INSERT INTO upcoming_task DEFAULT VALUES')
         resources.connection.commit()
-        current_selection_cursor_position[0] += 1
         intial_render()
     if len(selection_cursor_y_position) == 0: return
     if is_registering_input:

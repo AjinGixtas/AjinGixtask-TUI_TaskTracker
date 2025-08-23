@@ -27,7 +27,7 @@ def _update():
     elif key_state_tracker.get_key_state('s', key_state_tracker.JUST_PRESSED) or key_state_tracker.get_key_state('down', key_state_tracker.JUST_PRESSED): index += 1
     elif key_state_tracker.get_key_state('w', key_state_tracker.JUST_PRESSED) or key_state_tracker.get_key_state('up', key_state_tracker.JUST_PRESSED): index -= 1
     index = 0 if index < 0 else 2 if index > 2 else index
-    pad.addstr(cursor_origin_y + index, cursor_origin_x, '✶')
+    pad.addstr(cursor_origin_y + index, cursor_origin_x, '*')
     pad.refresh(0, 0, ANCHOR[0], ANCHOR[1], rows, columns)
 
 def _end():
